@@ -1,5 +1,5 @@
 class Cell:
-    def __init__(self, r, c, w):
+    def __init__(self, r, c, h, w):
         self.weight = w
         self.above = None
         self.below = None
@@ -7,6 +7,7 @@ class Cell:
         self.left = None
         self.row = r
         self.col = c
+        self.head = h
 
     def wrapLeft(self, other):
         other.right = self
@@ -21,12 +22,13 @@ class Cell:
 
 
 class HeaderCell(Cell):
-    def __init__(self, e):
+    def __init__(self, c, e):
         self.elem = e
         self.above = self
         self.below = self
         self.right = None
         self.left = None
+        self.col = c
 
 
 class IncidenceMatrix:
@@ -38,8 +40,8 @@ class IncidenceMatrix:
 
     def header(self):
         row = []
-        for t in self.target:
-            nxt = HeaderCell(t)
+        for i, t in enumerate(self.target):
+            nxt = HeaderCell(i, t)
             if len(row) > 0:
                 nxt.wrapLeft(row[-1])
             row.append(nxt)
@@ -51,11 +53,15 @@ class IncidenceMatrix:
         assert s <= self.tgtset
         row = []
         for e in s:
+            # find index of column
             idx = self.target.index(e)
-            nxt = Cell(self.nxtrow, idx, w)
+            # find the actual column header in list
             head = self.root
             for _ in range(idx):
                 head = head.right
+            # create the new cell
+            nxt = Cell(self.nxtrow, idx, head, w)
+            # make all cardinal links
             nxt.wrapUp(head.above)
             head.wrapUp(nxt)
             if len(row) > 0:
@@ -70,18 +76,24 @@ class IncidenceMatrix:
     def __repr__(self):
         rowsets = []
         head = self.root
+        hdrset = ["-" for _ in self.target]
+        while True:
+            hdrset[head.col] = str(head.elem)
+            head = head.right
+            if head == self.root:
+                break
         while True:
             r = head.below
             while r != head:
                 while len(rowsets) <= r.row:
-                    rowsets.append(["+"] * len(self.target))
-                rowsets[r.row][r.col] = str(self.target[r.col])
+                    rowsets.append(["-"] * len(self.target))
+                rowsets[r.row][r.col] = "X"
                 r = r.below
             if head.right == self.root:
                 break
             else:
                 head = head.right
-        rowsets = [" ".join(rs) for rs in rowsets]
+        rowsets = [" ".join(hdrset)] + [" ".join(rs) for rs in rowsets]
         return "\n".join(rowsets)
 
     def __str__(self):
