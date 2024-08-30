@@ -1,0 +1,107 @@
+\documentclass[a4paper]{article}
+
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{proposition}{Proposition}
+
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+
+\title{Counting Exact Covers}
+\author{Guillermo A. P\'erez}
+
+
+\begin{document}
+\maketitle
+
+\section{Satisfiability and Covers}
+We are interested in the connections between two decision problems: the
+satisfiability problem and the generalized exact cover problem.
+We will need definitions for propositional formulas and (set) covers.
+
+\subsection{Propositional logic}
+Let $\varphi$ be a propositional formula over Boolean variables $\vec{x} = (x_1,
+x_2, \dots, x_n)$. We say $\varphi$ is in conjunctive normal form (CNF) if it is of the
+form:
+\(
+  \bigwedge_{i=1}^m \psi_i(\vec{x})
+\)
+where the $\psi_i$, called clauses, are disjunctions of possibly negated
+variables. We refer to variables occurring in a clause as literals. If they are
+negated, then they are negative literals, otherwise they are positive. We
+sometimes write $x \in \psi$ to denote that the positive literal $x$
+occurs in the clause $\psi$; and $\overline{x} \in \psi$ to denote that the
+negative literal $\lnot x$ occurs in it.
+
+\subsection{Set covers}
+Let $P$ and $S$ be two disjoint finite sets. We sometimes call $P$ the primary
+set, to be covered exactly, and $S$ the secondary set, with a soft cover
+constraint. A collection $\mathcal{C}$ of subsets of $P \cup S$ covers
+$P$ exactly and $S$ softly if for all elements $p \in P$ there is exactly one set in
+$\mathcal{C}$ that contains $p$ and for all elements $s \in S$ there is at
+most one set in $\mathcal{C}$ that contains $s$. We call the pair $(P,S)$ a
+target pair.
+
+\subsection{Decision problems}
+The
+\textsc{SAT} problem asks whether a given formula $\varphi$ has a satisfying
+valuation. That is, whether there exists some $\vec{a} \in \mathbb{B}^n$ such
+that $\varphi(\vec{a}) = 1$.  The \textsc{GXC} problem asks, for given target
+pair $(P,S)$, and a collection $\mathcal{A}$ of subsets of $P \cup S$, whether
+there is a subset $\mathcal{C}$ of $\mathcal{A}$ that covers $P$ exactly and
+$S$ softly.
+
+\begin{proposition}
+  There is a logspace many-one reduction from \textsc{SAT} to \textsc{GXC}.
+\end{proposition}
+To prove the claim above, we can use the following construction. Consider an
+instance of \textsc{SAT} given as in the definitions earlier, i.e.
+$\varphi(\vec{x}) = \bigwedge_{i=1}^m \psi_i(\vec{x})$ is the CNF formula over
+$\vec{x} = (x_1, \dots, x_n)$. Then, we define the primary set to be the set
+of all variables union the set of all clauses; and the secondary set to
+consist of elements $\ell_{i,j}$ that we will use to encode the occurrence of
+variables in clauses. In symbols, we set:
+\begin{align*}
+  P & {} = \{x_1, x_2, \dots\} \cup \{\psi_i \mid 1 \leq i \leq m\}\\
+  S & {} = \{\ell_{i,j} \mid 1 \leq i \leq m, 1 \leq j \leq n\}.
+\end{align*}
+Now, for the collection of sets, we define $\mathcal{A}$ to be the union of
+three collections we describe below.
+\begin{enumerate}
+  \item The true sets per variable $\bigcup_{j=1}^{n} \left\{\{x_j\} \cup \{
+    \ell_{i,j} \mid \overline{x_j} \in \psi_i\} \right\}$
+  \item The false sets per variable $\bigcup_{j=1}^{n} \left\{\{x_j\} \cup \{
+    \ell_{i,j} \mid x_j \in \psi_i\} \right\}$
+  \item The clause-occurrence sets $\bigcup_{i=1}^{m} \{ \{ \psi_i, x_j \} \mid
+    1 \leq j \leq n, x_j \in \psi_i \text{ or } \overline{x_j} \in \psi_i\}$
+\end{enumerate}
+
+Note that, since the variables are in the primary set and the only the true
+and false sets of $x_j$ contain $x_j$, any collection $\mathcal{C} \subseteq
+\mathcal{A}$ that
+covers $P$ exactly corresponds to a valuation $\vec{a} \in \mathbb{B}^n$ of
+the variables. Furthermore, having a clause-occurrence set $\{\psi_i, x_j\}$
+in a collection $\mathcal{C} \subseteq \mathcal{A}$ that covers $P$ exactly means that the
+corresponding valuation $\vec{a} \in \mathbb{B}^n$ satisfies $\psi_i$, i.e.
+$\psi_i(\vec{a}) = 1$. To see this, note that the true set of $x_j$ would make
+an exact cover of $P$ with that pair impossible if $x_j$ occurs as a negative
+literal in $\psi_i$. Similarly, the false set of $x_j$ precludes an exact
+cover of $P$ with that pair if $x_j$ occurs as a positive literal in it.  Now,
+since the clauses are in the primary set, this means any collection covering
+$P$ exactly corresponds to a valuation that satisfies all clauses. Conversely,
+a satisfying valuation $\vec{a} \in \mathbb{B}^n$ of $\varphi$ can be used to
+construct a collection $\mathcal{C} \subseteq \mathcal{A}$ that covers $P$
+exactly and $S$ softly. However, while the choice of true and false sets is given direclty by
+the valuation, there can be multiple options for the choice of
+clause-occurrence sets. For instance, one can choose the first clause $\psi_i$
+(i.e. the clause with minimal index $i$) satisfied by the valuation $\vec{a}$.
+\begin{proposition}
+  For any collection $\mathcal{C} \subseteq \mathcal{A}$ that covers $P$
+  exactly and $S$ softly we can recover a valuation $\vec{a} \in \mathbb{B}^n$
+  such that $\varphi(\vec{a}) = 1$. Conversely, for any valuation $\vec{a} \in
+  \mathbb{B}^n$ with $\varphi(\vec{a}) = 1$ we can choose a collection
+  $\mathcal{C} \subseteq \mathcal{A}$ that covers $P$ exactly and $S$ softly.
+\end{proposition}
+
+
+\section{Counting Problems}
+
+\end{document}
