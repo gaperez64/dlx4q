@@ -74,25 +74,6 @@ three collections we describe below.
     1 \leq j \leq n, x_j \in \psi_i \text{ or } \overline{x_j} \in \psi_i\}$
 \end{enumerate}
 
-Note that, since the variables are in the primary set and the only the true
-and false sets of $x_j$ contain $x_j$, any collection $\mathcal{C} \subseteq
-\mathcal{A}$ that
-covers $P$ exactly corresponds to a valuation $\vec{a} \in \mathbb{B}^n$ of
-the variables. Furthermore, having a clause-occurrence set $\{\psi_i, x_j\}$
-in a collection $\mathcal{C} \subseteq \mathcal{A}$ that covers $P$ exactly means that the
-corresponding valuation $\vec{a} \in \mathbb{B}^n$ satisfies $\psi_i$, i.e.
-$\psi_i(\vec{a}) = 1$. To see this, note that the true set of $x_j$ would make
-an exact cover of $P$ with that pair impossible if $x_j$ occurs as a negative
-literal in $\psi_i$. Similarly, the false set of $x_j$ precludes an exact
-cover of $P$ with that pair if $x_j$ occurs as a positive literal in it.  Now,
-since the clauses are in the primary set, this means any collection covering
-$P$ exactly corresponds to a valuation that satisfies all clauses. Conversely,
-a satisfying valuation $\vec{a} \in \mathbb{B}^n$ of $\varphi$ can be used to
-construct a collection $\mathcal{C} \subseteq \mathcal{A}$ that covers $P$
-exactly and $S$ softly. However, while the choice of true and false sets is given direclty by
-the valuation, there can be multiple options for the choice of
-clause-occurrence sets. For instance, one can choose the first clause $\psi_i$
-(i.e. the clause with minimal index $i$) satisfied by the valuation $\vec{a}$.
 \begin{proposition}
   For any collection $\mathcal{C} \subseteq \mathcal{A}$ that covers $P$
   exactly and $S$ softly we can recover a valuation $\vec{a} \in \mathbb{B}^n$
@@ -100,6 +81,27 @@ clause-occurrence sets. For instance, one can choose the first clause $\psi_i$
   \mathbb{B}^n$ with $\varphi(\vec{a}) = 1$ we can choose a collection
   $\mathcal{C} \subseteq \mathcal{A}$ that covers $P$ exactly and $S$ softly.
 \end{proposition}
+\begin{proof}
+  Note that, since the variables are in the primary set and the only the true
+  and false sets of $x_j$ contain $x_j$, any collection $\mathcal{C} \subseteq
+  \mathcal{A}$ that
+  covers $P$ exactly corresponds to a valuation $\vec{a} \in \mathbb{B}^n$ of
+  the variables. Furthermore, having a clause-occurrence set $\{\psi_i, x_j\}$
+  in a collection $\mathcal{C} \subseteq \mathcal{A}$ that covers $P$ exactly means that the
+  corresponding valuation $\vec{a} \in \mathbb{B}^n$ satisfies $\psi_i$, i.e.
+  $\psi_i(\vec{a}) = 1$. To see this, note that the true set of $x_j$ would make
+  an exact cover of $P$ with that pair impossible if $x_j$ occurs as a negative
+  literal in $\psi_i$. Similarly, the false set of $x_j$ precludes an exact
+  cover of $P$ with that pair if $x_j$ occurs as a positive literal in it.  Now,
+  since the clauses are in the primary set, this means any collection covering
+  $P$ exactly corresponds to a valuation that satisfies all clauses. Conversely,
+  a satisfying valuation $\vec{a} \in \mathbb{B}^n$ of $\varphi$ can be used to
+  construct a collection $\mathcal{C} \subseteq \mathcal{A}$ that covers $P$
+  exactly and $S$ softly. However, while the choice of true and false sets is given direclty by
+  the valuation, there can be multiple options for the choice of
+  clause-occurrence sets. For instance, one can choose the first clause $\psi_i$
+  (i.e. the clause with minimal index $i$) satisfied by the valuation $\vec{a}$.
+\end{proof}
 
 
 \section{Counting Problems}
