@@ -1,11 +1,15 @@
 def algox(wincmat, w=1):
-    if wincmat.root is None:
+    # There are either no rows or all remaining rows are soft constraints,
+    # so we are done. The assumption is that the root always points to a
+    # nonsoft column if one exists or None.
+    if wincmat.root is None or wincmat.root.soft:
         yield w
         return
     head = wincmat.root
     # FIXME: Choose a column smartly
 
     # Iterate over rows sat-ing the col to extend partial solution
+    satd = False
     it = head.below
     while it != head:
         oldroot = wincmat.root
@@ -45,9 +49,21 @@ def algox(wincmat, w=1):
             else:
                 jt = jt.right
 
+        # FIXME: this is an invariant!
+        # if wincmat.root is not None, we need to make sure it is
+        # pointing to a nonsoft column if there is one
+        # if wincmat.root is not None and wincmat.root.soft:
+        #     rt = wincmat.root
+        #     wincmat.root = wincmat.root.right
+        #     while wincmat.root.soft and wincmat.root != rt:
+        #         wincmat.root = wincmat.root.right
+        #     assert wincmat.root == rt
+
         # At this point we can recursively count all solutions of the
         # subproblem
-        yield from algox(wincmat, it.weight * w)
+        for x in algox(wincmat, it.weight * w):
+            yield x
+            satd = True
 
         # then repair all removals (in reverse)
         wincmat.root = oldroot
@@ -75,5 +91,9 @@ def algox(wincmat, w=1):
             else:
                 jt = jt.left
 
-        # and move to the next row for another partial sol.
-        it = it.below
+        # move to the next row for another partial sol.
+        # but only if this is not a cut column
+        if head.cut and satd:
+            break
+        else:
+            it = it.below
